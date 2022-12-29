@@ -21,6 +21,7 @@ std::string DivTreeItem::getText() const {
 }
 std::string CellTreeItem::getText() const {
     std::vector<std::string> cellTexts;
+    cellTexts.reserve(this->children.size());
     for (const auto &item: this->children) {
         cellTexts.push_back(item->getText());
     }
@@ -31,9 +32,8 @@ TableTreeItem::TableTreeItem(const std::shared_ptr<TableItem>& item):BaseTreeIte
 TableTreeItem::TableTreeItem(
         const std::shared_ptr<TableItem>& item,
         std::vector<std::shared_ptr<CellTreeItem>> children)
-        :BaseTreeItem(item), children(std::move(children)) {
-//    std::sort(this->children.begin(),this->children.end(),cellPosCom);
-}
+        :BaseTreeItem(item), children(std::move(children)) {}
+
 std::string TableTreeItem::getText() const {
     auto tmpChildren(this->children);
     std::sort(tmpChildren.begin(), tmpChildren.end(),cellPosCom);

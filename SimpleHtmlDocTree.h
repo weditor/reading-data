@@ -6,6 +6,7 @@
 #define UNTITLED_SIMPLEHTMLDOCTREE_H
 
 #include <memory>
+#include <optional>
 #include <utility>
 #include <vector>
 #include <map>
@@ -35,10 +36,10 @@ public:
     std::map<int, std::shared_ptr<BaseTreeItem>> itemMap;
 
 public:
-    std::shared_ptr<BaseTreeItem> get_item(int item_id);
-    std::shared_ptr<BaseTreeItem> get_parent(const BaseTreeItem &item);
+    std::optional<std::shared_ptr<BaseTreeItem>> get_item(int item_id);
+    std::optional<std::shared_ptr<BaseTreeItem>> get_parent(const BaseTreeItem &item);
     std::vector<std::shared_ptr<BaseTreeItem>> find_path(int item_id);
-    std::vector<std::shared_ptr<BaseTreeItem>> get_index(int item_id);
+//    std::vector<std::shared_ptr<BaseTreeItem>> get_index(int item_id);
     SimpleHtmlDoc to_shtm_doc();
     static SimpleHtmlDocTree from_shtm_doc(const SimpleHtmlDoc &doc);
 private:

@@ -12,11 +12,12 @@ add_executable(library_test library.cpp shtmItem.h shtmTreeItem.h utils.h shtmTr
         SimpleHtmlDocTree.h errors.h)
 #pybind11_add_module(mylibrary library.cpp shtmItem.h shtmTreeItem.h utils.h shtmTreeItem.cpp SimpleHtmlDocTree.cpp
 #        SimpleHtmlDocTree.h errors.h reading_bind.cpp)
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
-set(CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+#set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+#set(CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 
-pybind11_add_module(example example.cpp library.cpp shtmItem.h shtmTreeItem.h utils.h shtmTreeItem.cpp SimpleHtmlDocTree.cpp
+pybind11_add_module(example example.cpp example.h library.cpp shtmItem.h shtmTreeItem.h utils.h shtmTreeItem.cpp SimpleHtmlDocTree.cpp
         SimpleHtmlDocTree.h errors.h)
+pybind11_add_module(example2 example2.cpp)
 #add_library(myLib SHARED ${SOURCE_FILES})
 #set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(example -static-libgcc -static-libstdc++)

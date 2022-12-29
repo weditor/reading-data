@@ -14,4 +14,6 @@ c = b['contents'][0]['content']
 d = example.SimpleHtmlDoc.parse_raw(c)
 items = list(d.items)
 aa = items[-1]
+dd = example.SimpleHtmlDocTree.from_shtm_doc(d)
+dd.get_item(1)
 ```

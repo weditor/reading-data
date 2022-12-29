@@ -3,6 +3,7 @@
 //
 
 #include <string.h>
+#include <optional>
 #include "SimpleHtmlDocTree.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
@@ -139,17 +140,17 @@ BaseItem* parse_raw_item(const Value &raw_value) {
 SimpleHtmlDocTree::SimpleHtmlDocTree(std::vector<std::shared_ptr<BaseTreeItem>> items,
                                      std::map<int, std::shared_ptr<BaseTreeItem>> itemMap)
                                      : items(std::move(items)), itemMap(std::move(itemMap)) {}
-std::shared_ptr<BaseTreeItem> SimpleHtmlDocTree::get_item(int item_id) {
+std::optional<std::shared_ptr<BaseTreeItem>> SimpleHtmlDocTree::get_item(int item_id) {
     try {
         return itemMap.at(item_id);
     } catch (std::out_of_range &e) {
-        return std::shared_ptr<BaseTreeItem>(nullptr);
+        return std::nullopt;
     }
 }
 
-std::shared_ptr<BaseTreeItem> SimpleHtmlDocTree::get_parent(const BaseTreeItem &item) {
+std::optional<std::shared_ptr<BaseTreeItem>> SimpleHtmlDocTree::get_parent(const BaseTreeItem &item) {
     if (item.getPid() < 0) {
-        return std::shared_ptr<BaseTreeItem>(nullptr);
+        return std::nullopt;
     }
     return this->get_item(item.getPid());
 }
@@ -164,11 +165,11 @@ void SimpleHtmlDocTree::find_path_inner(int item_id, std::vector<std::shared_ptr
         return;
     }
     auto item = get_item(item_id);
-    if (!item) {
+    if (!item.has_value()) {
         return;
     }
-    find_path_inner(item->getPid(), result);
-    result.push_back(item);
+    find_path_inner(item.value()->getPid(), result);
+    result.push_back(item.value());
 }
 
 //std::vector<std::shared_ptr<BaseTreeItem<BaseItem>>> SimpleHtmlDocTree::get_index(int item_id) {

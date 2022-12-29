@@ -1,16 +1,34 @@
 //
 // Created by viruser on 2022/12/28.
 //
-#include "pybind11/pybind11.h"
-#include "pybind11/stl.h"
-#include "SimpleHtmlDocTree.h"
-#include "shtmItem.h"
+
+#include "example.h"
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(example, m) {
 
     m.doc() = "pybind11 example plugin"; // optional module docstring
+
+    py::class_<BaseItemVector>(m, "BaseItemVector")
+            .def(py::init<>())
+//            .def("clear", &BaseItemVector::clear)
+//            .def("pop_back", &BaseItemVector::pop_back)
+            .def("__len__", [](const BaseItemVector &v) { return v.size(); })
+            .def("__getitem__", [](BaseItemVector &v, int i) { return v.at(i); }, py::keep_alive<0, 1>())
+            .def("__iter__", [](BaseItemVector &v) {
+                return py::make_iterator(v.begin(), v.end());
+            }, py::keep_alive<0, 1>()) /* Keep vector alive while iterator is used */
+            ;
+
+    py::class_<BaseTreeItemVector>(m, "BaseTreeItemVector")
+            .def(py::init<>())
+            .def("__len__", [](const BaseTreeItemVector &v) { return v.size(); })
+            .def("__getitem__", [](BaseTreeItemVector &v, int i) { return v.at(i); }, py::keep_alive<0, 1>())
+            .def("__iter__", [](BaseTreeItemVector &v) {
+                return py::make_iterator(v.begin(), v.end());
+            }, py::keep_alive<0, 1>()) /* Keep vector alive while iterator is used */
+            ;
 
 //    m.def("add", &add, "A function that adds two numbers");
     py::class_<BaseItem, std::shared_ptr<BaseItem>>(m, "BaseItem")
@@ -67,29 +85,32 @@ PYBIND11_MODULE(example, m) {
             .def_readonly("colspan", &CellPos::colspan)
             ;
     /** TreeItem **/
-    py::class_<SpanTreeItem>(m, "SpanTreeItem")
+    py::class_<BaseTreeItem, std::shared_ptr<BaseTreeItem>>(m, "BaseTreeItem")
+            .def("get_text", &BaseTreeItem::getText)
+            ;
+    py::class_<SpanTreeItem, std::shared_ptr<SpanTreeItem>>(m, "SpanTreeItem")
             .def(py::init<const std::shared_ptr<SpanItem> &>())
             .def("get_text", &SpanTreeItem::getText)
             ;
-    py::class_<PTreeItem>(m, "PTreeItem")
+    py::class_<PTreeItem, std::shared_ptr<PTreeItem>>(m, "PTreeItem")
             .def(py::init<const std::shared_ptr<PItem>&>())
             .def("get_text", &PTreeItem::getText)
             ;
-    py::class_<ImgTreeItem>(m, "ImgTreeItem")
+    py::class_<ImgTreeItem, std::shared_ptr<ImgTreeItem>>(m, "ImgTreeItem")
             .def(py::init<const std::shared_ptr<ImgItem>&>())
             .def("get_text", &ImgTreeItem::getText)
             ;
-    py::class_<DivTreeItem>(m, "DivTreeItem")
+    py::class_<DivTreeItem, std::shared_ptr<DivTreeItem>>(m, "DivTreeItem")
             .def(py::init<const std::shared_ptr<DivItem>&>())
             .def_readonly("children", &DivTreeItem::children)
             .def("get_text", &DivTreeItem::getText)
             ;
-    py::class_<CellTreeItem>(m, "CellTreeItem")
+    py::class_<CellTreeItem, std::shared_ptr<CellTreeItem>>(m, "CellTreeItem")
             .def(py::init<const std::shared_ptr<CellItem>&>())
             .def_readonly("children", &CellTreeItem::children)
             .def("get_text", &CellTreeItem::getText)
             ;
-    py::class_<TableTreeItem>(m, "TableTreeItem")
+    py::class_<TableTreeItem, std::shared_ptr<TableTreeItem>>(m, "TableTreeItem")
             .def(py::init<const std::shared_ptr<TableItem>&>())
             .def_readonly("children", &TableTreeItem::children)
             .def("get_text", &TableTreeItem::getText)
@@ -98,6 +119,14 @@ PYBIND11_MODULE(example, m) {
     py::class_<SimpleHtmlDoc>(m, "SimpleHtmlDoc")
             .def_static("parse_raw", &SimpleHtmlDoc::parse_raw_from_cstr, "build SimpleHtmlDoc instance")
             .def_readonly("items", &SimpleHtmlDoc::items)
+            ;
+    py::class_<SimpleHtmlDocTree>(m, "SimpleHtmlDocTree")
+            .def_static("from_shtm_doc", &SimpleHtmlDocTree::from_shtm_doc)
+            .def("get_item", &SimpleHtmlDocTree::get_item)
+            .def("get_parent", &SimpleHtmlDocTree::get_parent)
+            .def("find_path", &SimpleHtmlDocTree::find_path)
+            .def("to_shtm_doc", &SimpleHtmlDocTree::to_shtm_doc)
+            .def_readonly("items", &SimpleHtmlDocTree::items)
             ;
     py::enum_<HtmlTag>(m, "HtmlTag", py::arithmetic())
             .value("p", HtmlTag::p)
