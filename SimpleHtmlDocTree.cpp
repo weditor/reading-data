@@ -9,6 +9,7 @@
 #include "errors.h"
 
 using namespace rapidjson;
+using std::static_pointer_cast;
 
 BaseItem* parse_raw_item(const Value &raw_value);
 std::string json_to_string(const Value &value);

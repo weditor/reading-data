@@ -68,29 +68,29 @@ PYBIND11_MODULE(example, m) {
             ;
     /** TreeItem **/
     py::class_<SpanTreeItem>(m, "SpanTreeItem")
-            .def(py::init<const SpanItem&>())
+            .def(py::init<const std::shared_ptr<SpanItem> &>())
             .def("get_text", &SpanTreeItem::getText)
             ;
     py::class_<PTreeItem>(m, "PTreeItem")
-            .def(py::init<const PItem&>())
+            .def(py::init<const std::shared_ptr<PItem>&>())
             .def("get_text", &PTreeItem::getText)
             ;
     py::class_<ImgTreeItem>(m, "ImgTreeItem")
-            .def(py::init<const ImgItem&>())
+            .def(py::init<const std::shared_ptr<ImgItem>&>())
             .def("get_text", &ImgTreeItem::getText)
             ;
     py::class_<DivTreeItem>(m, "DivTreeItem")
-            .def(py::init<const DivItem&>())
+            .def(py::init<const std::shared_ptr<DivItem>&>())
             .def_readonly("children", &DivTreeItem::children)
             .def("get_text", &DivTreeItem::getText)
             ;
     py::class_<CellTreeItem>(m, "CellTreeItem")
-            .def(py::init<const CellItem&>())
+            .def(py::init<const std::shared_ptr<CellItem>&>())
             .def_readonly("children", &CellTreeItem::children)
             .def("get_text", &CellTreeItem::getText)
             ;
     py::class_<TableTreeItem>(m, "TableTreeItem")
-            .def(py::init<const TableItem&>())
+            .def(py::init<const std::shared_ptr<TableItem>&>())
             .def_readonly("children", &TableTreeItem::children)
             .def("get_text", &TableTreeItem::getText)
             ;

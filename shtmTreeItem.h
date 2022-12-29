@@ -61,13 +61,15 @@ struct CellTreeItem: public BaseTreeItem {
 
     std::vector<std::shared_ptr<BaseTreeItem>> children;
     std::string getText() const override;
-    const CellPos& getPos() {
-
+    const CellPos& getPos() const {
+        auto cellItem = (CellItem*)&(*(this->item));
+        return cellItem->pos;
     }
 };
 
 struct TableTreeItem: public BaseTreeItem {
-    explicit TableTreeItem(const std::shared_ptr<TableItem>& item):BaseTreeItem(item){}
+    TableTreeItem(const std::shared_ptr<TableItem>& item, std::vector<std::shared_ptr<CellTreeItem>> children);
+    explicit TableTreeItem(const std::shared_ptr<TableItem>& item);
 
     std::vector<std::shared_ptr<CellTreeItem>> children;
     std::string getText() const override;

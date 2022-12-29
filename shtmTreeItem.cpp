@@ -5,11 +5,11 @@
 #include "shtmTreeItem.h"
 
 
-static bool cellPosCom(CellTreeItem* a, CellTreeItem* b) {
-    if (a->item.pos.row == b->item.pos.row) {
-        return a->item.pos.col < b->item.pos.col;
+static bool cellPosCom(const std::shared_ptr<CellTreeItem> &a, const std::shared_ptr<CellTreeItem> &b) {
+    if (a->getPos().row == b->getPos().row) {
+        return a->getPos().col < b->getPos().col;
     }
-    return a->item.pos.row < b->item.pos.row;
+    return a->getPos().row < b->getPos().row;
 }
 
 std::string DivTreeItem::getText() const {
@@ -27,18 +27,26 @@ std::string CellTreeItem::getText() const {
     return join(cellTexts.begin(), cellTexts.end(), "\n");
 }
 
+TableTreeItem::TableTreeItem(const std::shared_ptr<TableItem>& item):BaseTreeItem(item) {}
+TableTreeItem::TableTreeItem(
+        const std::shared_ptr<TableItem>& item,
+        std::vector<std::shared_ptr<CellTreeItem>> children)
+        :BaseTreeItem(item), children(std::move(children)) {
+//    std::sort(this->children.begin(),this->children.end(),cellPosCom);
+}
 std::string TableTreeItem::getText() const {
-    std::sort(this->children.begin(),this->children.end(),cellPosCom);
+    auto tmpChildren(this->children);
+    std::sort(tmpChildren.begin(), tmpChildren.end(),cellPosCom);
     std::vector<std::string> lines;
     std::vector<std::string> cellTexts;
     int lastRow = -1;
-    for (const auto &item: this->children) {
-        if (item->item.pos.row != lastRow) {
+    for (const auto &item: tmpChildren) {
+        if (item->getPos().row != lastRow) {
             if (!cellTexts.empty()) {
                 lines.push_back(join(cellTexts.begin(), cellTexts.end(), "\t"));
             }
             cellTexts.clear();
-            lastRow = item->item.pos.row;
+            lastRow = item->getPos().row;
             continue;
         }
         cellTexts.push_back(item->getText());
