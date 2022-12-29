@@ -16,4 +16,10 @@ items = list(d.items)
 aa = items[-1]
 dd = example.SimpleHtmlDocTree.from_shtm_doc(d)
 dd.get_item(1)
+
+import example
+import json
+v = example.BaseItemVector()
+v.append2(example.PItem(-1,1, "Fuck"))
+a = example.SimpleHtmlDoc([example.PItem(-1,1, "Fuck")])
 ```

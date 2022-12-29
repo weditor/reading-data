@@ -5,30 +5,35 @@
 #include "example.h"
 
 namespace py = pybind11;
+using namespace pybind11::literals;
+
+template<typename T>
+void baseItemVectorAppender(BaseItemVector &v, std::shared_ptr<T> item) {
+    v.push_back(item);
+}
 
 PYBIND11_MODULE(example, m) {
 
     m.doc() = "pybind11 example plugin"; // optional module docstring
 
-    py::class_<BaseItemVector>(m, "BaseItemVector")
-            .def(py::init<>())
-//            .def("clear", &BaseItemVector::clear)
-//            .def("pop_back", &BaseItemVector::pop_back)
-            .def("__len__", [](const BaseItemVector &v) { return v.size(); })
-            .def("__getitem__", [](BaseItemVector &v, int i) { return v.at(i); }, py::keep_alive<0, 1>())
-            .def("__iter__", [](BaseItemVector &v) {
-                return py::make_iterator(v.begin(), v.end());
-            }, py::keep_alive<0, 1>()) /* Keep vector alive while iterator is used */
+    py::bind_vector<BaseItemVector>(m, "BaseItemVector")
+            .def("append", baseItemVectorAppender<PItem>)
+            .def("append", baseItemVectorAppender<SpanItem>)
+            .def("append", baseItemVectorAppender<ImgItem>)
+            .def("append", baseItemVectorAppender<DivItem>)
+            .def("append", baseItemVectorAppender<TableItem>)
+            .def("append", baseItemVectorAppender<CellItem>)
             ;
 
-    py::class_<BaseTreeItemVector>(m, "BaseTreeItemVector")
-            .def(py::init<>())
-            .def("__len__", [](const BaseTreeItemVector &v) { return v.size(); })
-            .def("__getitem__", [](BaseTreeItemVector &v, int i) { return v.at(i); }, py::keep_alive<0, 1>())
-            .def("__iter__", [](BaseTreeItemVector &v) {
-                return py::make_iterator(v.begin(), v.end());
-            }, py::keep_alive<0, 1>()) /* Keep vector alive while iterator is used */
-            ;
+    py::bind_vector<BaseTreeItemVector>(m, "BaseTreeItemVector");
+//    py::class_<BaseTreeItemVector>(m, "BaseTreeItemVector")
+//            .def(py::init<>())
+//            .def("__len__", [](const BaseTreeItemVector &v) { return v.size(); })
+//            .def("__getitem__", [](BaseTreeItemVector &v, int i) { return v.at(i); }, py::keep_alive<0, 1>())
+//            .def("__iter__", [](BaseTreeItemVector &v) {
+//                return py::make_iterator(v.begin(), v.end());
+//            }, py::keep_alive<0, 1>()) /* Keep vector alive while iterator is used */
+//            ;
 
 //    m.def("add", &add, "A function that adds two numbers");
     py::class_<BaseItem, std::shared_ptr<BaseItem>>(m, "BaseItem")
@@ -117,6 +122,7 @@ PYBIND11_MODULE(example, m) {
             ;
     /** SimpleHtmlDocTree **/
     py::class_<SimpleHtmlDoc>(m, "SimpleHtmlDoc")
+            .def(py::init<BaseItemVector>())
             .def_static("parse_raw", &SimpleHtmlDoc::parse_raw_from_cstr, "build SimpleHtmlDoc instance")
             .def_readonly("items", &SimpleHtmlDoc::items)
             ;
