@@ -49,7 +49,7 @@ private:
                     std::vector<std::shared_ptr<BaseTreeItem>> &result);
 };
 
-/*************** 标注的文档 ****************/
+/*************** annotation document ****************/
 
 //enum class AnnotStatus {
 //    initial,

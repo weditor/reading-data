@@ -3,21 +3,24 @@ try:
 except ImportError:
     from setuptools import Extension as Pybind11Extension
 
+from pathlib import Path
 from glob import glob
 from setuptools import setup
 from pybind11.setup_helpers import Pybind11Extension
 
-source_dir = ".."
+source_dir = str(Path("..").resolve().absolute())
 sources = [
-    f"{source_dir}/example.cpp", f"{source_dir}/example.h", f"{source_dir}/library.cpp",
-    f"{source_dir}/shtmItem.h", f"{source_dir}/shtmTreeItem.h", f"{source_dir}/utils.h",
-    f"{source_dir}/shtmTreeItem.cpp", f"{source_dir}/SimpleHtmlDocTree.cpp",
-    f"{source_dir}/SimpleHtmlDocTree.h", f"{source_dir}/errors.h",
+    f"{source_dir}/example.cpp",
+    f"{source_dir}/shtmTreeItem.cpp",
+    f"{source_dir}/SimpleHtmlDocTree.cpp",
 ]
+extra_compile_args=[f"-I{source_dir}/include", f"-I{source_dir}/pybind11/include"]
 ext_modules = [
     Pybind11Extension(
         "python_example",
         sorted(sources),  # Sort source files for reproducibility
+        extra_compile_args=extra_compile_args,
+        cxx_std=17,
     ),
 ]
 

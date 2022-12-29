@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iterator>
 #include <ctime>
-#include <sys/time.h>
+// #include <sys/time.h>
 
 template<typename InputIt>
 static std::string join(InputIt begin,
@@ -25,10 +25,13 @@ static std::string join(InputIt begin,
 }
 
 static time_t get_time() {
-    struct timeval time_now{};
+    /*
+    struct timeval time_now {};
     gettimeofday(&time_now, nullptr);
     time_t msecs_time = (time_now.tv_sec * 1000) + (time_now.tv_usec / 1000);
     return msecs_time;
+    */
+    return 0;
 }
 
 #endif //UNTITLED_UTILS_H

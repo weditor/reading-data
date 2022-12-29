@@ -2,3 +2,8 @@ cmake-build-*/
 data/
 .idea/
 .vscode/
+.vs/
+out/
+python/build/
+python/dist/
+python/*.egg-info/
